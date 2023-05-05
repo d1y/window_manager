@@ -194,6 +194,12 @@ public class WindowManagerPlugin: NSObject, FlutterPlugin {
             windowManager.setTitle(args)
             result(true)
             break
+        case "setCollectionBehavior":
+            windowManager.setCollectionBehavior(args)
+            result(true)
+            break
+        case "getCollectionBehavior":
+            result(windowManager.getCollectionBehavior())
         case "setTitleBarStyle":
             windowManager.setTitleBarStyle(args)
             result(true)

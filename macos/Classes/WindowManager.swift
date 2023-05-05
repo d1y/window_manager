@@ -327,6 +327,27 @@ public class WindowManager: NSObject, NSWindowDelegate {
         let isAlwaysOnTop: Bool = args["isAlwaysOnTop"] as! Bool
         mainWindow.level = isAlwaysOnTop ? .floating : .normal
     }
+
+    public func setCollectionBehavior(_ args: [String: Any]) {
+        // TODO: impl other behaviors
+        // link: https://developer.apple.com/documentation/appkit/nswindow/collectionbehavior
+        let collectionBehavior: String = args["collectionBehavior"] as! String
+        if (collectionBehavior == "canJoinAllSpaces") {
+            mainWindow.collectionBehavior = .canJoinAllSpaces
+        } else if (collectionBehavior == "moveToActiveSpace") {
+            mainWindow.collectionBehavior = .moveToActiveSpace
+        }
+    }
+
+    public func getCollectionBehavior() -> String {
+       let collectionBehavior = mainWindow.collectionBehavior 
+        if (collectionBehavior == .canJoinAllSpaces) {
+            return "canJoinAllSpaces"
+        } else if (collectionBehavior == .moveToActiveSpace) {
+            return "moveToActiveSpace"
+        }
+        return "unknow"
+    }
     
     public func getTitle() -> String {
         return mainWindow.title

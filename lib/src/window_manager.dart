@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
+import 'package:window_manager/src/collection_behavior.dart';
 import 'package:window_manager/src/resize_edge.dart';
 import 'package:window_manager/src/title_bar_style.dart';
 import 'package:window_manager/src/utils/calc_window_position.dart';
@@ -490,6 +491,30 @@ class WindowManager {
       'title': title,
     };
     await _channel.invokeMethod('setTitle', arguments);
+  }
+
+  /// Sets the collection behavior of native window(macos).
+  ///
+  /// @platforms macos
+  Future<void> setCollectionBehavior(
+      CollectionBehavior collectionBehavior) async {
+    final Map<String, dynamic> arguments = {
+      'collectionBehavior': describeEnum(collectionBehavior),
+    };
+    await _channel.invokeMethod('setCollectionBehavior', arguments);
+  }
+
+  /// Returns `CollectionBehavior` - the collection behavior of native window(macos).
+  ///
+  /// @platforms macos
+  Future<CollectionBehavior> getCollectionBehavior() async {
+    final result = await _channel.invokeMethod('getCollectionBehavior');
+    if (result == describeEnum(CollectionBehavior.canJoinAllSpaces)) {
+      return CollectionBehavior.canJoinAllSpaces;
+    } else if (result == describeEnum(CollectionBehavior.moveToActiveSpace)) {
+      return CollectionBehavior.moveToActiveSpace;
+    }
+    return CollectionBehavior.unknow;
   }
 
   /// Changes the title bar style of native window.

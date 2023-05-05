@@ -1,3 +1,4 @@
+export 'src/collection_behavior.dart';
 export 'src/resize_edge.dart';
 export 'src/title_bar_style.dart';
 export 'src/utils/calc_window_position.dart';
