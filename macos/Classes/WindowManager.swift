@@ -53,6 +53,14 @@ public class WindowManager: NSObject, NSWindowDelegate {
     private var _isMaximized: Bool = false
     private var _isMaximizable: Bool = true
 
+    private func _hideDock() {
+        NSApplication.shared.hide(nil)
+    }
+
+    private func _showDock() {
+        NSApplication.shared.unhide(nil)
+    }
+
     override public init() {
         super.init()
     }
@@ -326,6 +334,36 @@ public class WindowManager: NSObject, NSWindowDelegate {
     public func setAlwaysOnTop(_ args: [String: Any]) {
         let isAlwaysOnTop: Bool = args["isAlwaysOnTop"] as! Bool
         mainWindow.level = isAlwaysOnTop ? .floating : .normal
+    }
+
+    func setCollectionBehavior2(on: Bool, flag: NSWindow.CollectionBehavior) {
+        if on {
+            mainWindow.collectionBehavior.insert(flag)
+        } else {
+            mainWindow.collectionBehavior.remove(flag)
+        }
+    }
+
+    // NOTE(d1y): impl by electron source code
+    // https://github.com/electron/electron/blob/f8d534f33e83c6323ed4354e51ef7d736ac24ab1/shell/browser/native_window_mac.mm#L1708
+    public func setVisibleOnAllWorkspaces(_ args: [String: Any]) {
+        let visible: Bool = args["visible"] as! Bool
+        let visibleOnFullScreen: Bool = args["visibleOnFullScreen"] as! Bool
+        let skipTransformProcessType: Bool = args["skipTransformProcessType"] as! Bool
+        if (!skipTransformProcessType) {
+            if (visibleOnFullScreen) {
+                _hideDock();
+            } else {
+                _showDock();
+            }
+        }
+        setCollectionBehavior2(on: visible, flag: .canJoinAllSpaces)
+        setCollectionBehavior2(on: visibleOnFullScreen, flag: .fullScreenAuxiliary)
+    }
+
+    public func isVisibleOnAllWorkspaces() -> Bool {
+        let collectionBehavior = mainWindow.collectionBehavior
+        return collectionBehavior.contains(.canJoinAllSpaces)
     }
 
     public func setCollectionBehavior(_ args: [String: Any]) {
